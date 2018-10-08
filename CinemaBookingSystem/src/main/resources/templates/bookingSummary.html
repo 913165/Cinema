@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Welcome to Cinema Booking System</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" media="screen" />
+<style>
+.bld {
+	font-weight: bold;
+}
+body {
+    background-size: 600x200px;
+    background-repeat: no-repeat;
+}
+</style>
+</head>
+<body >
+	<div th:include="../common/header"></div>
+	<div class="container">
+		<div>
+			<h1>Booking Summary</h1>
+		</div>
+		<p></p>
+		<div class="search">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-10 col-md-offset-1">
+						<div class="form-section">
+							<div class="row">
+								<form action="#" th:action="@{|/confirmBooking|}" method="post">
+									<input type="text" name="movieSelect" th:value="${bookingWebDtoFinal.movieSelect}"> <br>
+									<input type="text" name="cinemaSelect" th:value="${bookingWebDtoFinal.cinemaSelect}"> <br>
+									<input type="text" name="dateSelect" th:value="${bookingWebDtoFinal.dateSelect}"> <br>
+									<input type="text" name="timeSelect" th:value="${bookingWebDtoFinal.timeSelect}"> <br>
+									<input type="text" name="selectedSeats" th:value="${bookingWebDtoFinal.selectedSeats}"> <br>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

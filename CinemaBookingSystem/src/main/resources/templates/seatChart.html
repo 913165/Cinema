@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<style>
+.row {
+	display: flex;
+}
+
+.cell {
+	border-radius: 5px;
+	background: grey;
+	color: #fff;
+	width: 40px;
+	height: 40px;
+	flex: 0 0 auto;
+	text-align: center;
+	padding: 5px;
+	border-right: 3px solid #fff;
+	border-bottom: 3px solid #fff;
+}
+
+.infocell {
+	border-radius: 5px;
+	background: grey;
+	color: #fff;
+	width: 200px;
+	height: 40px;
+	flex: 0 0 auto;
+	text-align: center;
+	padding: 5px;
+	border-right: 3px solid #fff;
+	border-bottom: 3px solid #fff;
+}
+
+.cellblank {
+	background: #FFF;
+	color: #000;
+	width: 30px;
+	height: 30px;
+	flex: 0 0 auto;
+	text-align: center;
+	padding: 5px;
+	border-right: 3px solid #fff;
+	border-bottom: 3px solid #fff;
+}
+
+.center {
+	margin: auto;
+	width: 50%;
+	height: 300px;
+	border: 3px solid #73AD21;
+	padding: 15px;
+}
+
+.invisible {
+	visibility: hidden;
+}
+</style>
+</head>
+<body>
+	<div th:include="../common/header"></div>
+	<p></p>
+	<p></p>
+	<p></p>
+	<div class="container center">
+		<p></p>
+		<p></p>
+		<p></p>
+		<form action="#" th:action="@{|/selectSeats|}" th:object="${bookingWebDtoSeatSelect}" method="post">
+			<input type="hidden" id="strCurrentBookedSeats" name="strCurrentBookedSeats" th:value="${strCurrentBookedSeats}">
+			<div id="listDiv"></div>
+			<div>
+				<div class="row">
+					<div class="cellblank"></div>
+					<button id="A0" name="selectedSeatsButton" type="button" class="cell">A0</button>
+					<button id="A1" name="selectedSeatsButton" type="button" class="cell">A1</button>
+					<button id="A2" name="selectedSeatsButton" type="button" class="cell">A2</button>
+					<button id="A3" name="selectedSeatsButton" type="button" class="cell">A3</button>
+					<button id="A4" name="selectedSeatsButton" type="button" class="cell">A4</button>
+
+				</div>
+				<div class="row">
+					<div class="cellblank"></div>
+					<button id="B0" name="selectedSeatsButton" type="button" class="cell">B0</button>
+					<button id="B1" name="selectedSeatsButton" type="button" class="cell">B1</button>
+					<button id="B2" name="selectedSeatsButton" type="button" class="cell">B2</button>
+					<button id="B3" name="selectedSeatsButton" type="button" class="cell">B3</button>
+					<button id="B5" name="selectedSeatsButton" type="button" class="cell">B4</button>
+					<div class="cellblank .btn-primary"></div>
+					<div class="cellblank"></div>
+					<div class="cellblank"></div>
+					<div class="cellblank"></div>
+					<div class="cellblank"></div>
+					<div class="cellblank"></div>
+					<div class="cellblank"></div>
+					<div class="cellblank"></div>
+					<div class="cellblank"></div>
+					<div class="cellblank"></div>
+					<div class="cellblank"></div>
+					<div class="cellblank"></div>
+					<div class="infocell">Available</div>
+				</div>
+				<div class="row">
+					<div class="cellblank"></div>
+					<button id="C0" name="selectedSeatsButton" type="button" class="cell">C1</button>
+					<button id="C1" name="selectedSeatsButton" type="button" class="cell">C1</button>
+					<button id="C2" name="selectedSeatsButton" type="button" class="cell">C2</button>
+					<button id="C3" name="selectedSeatsButton" type="button" class="cell">C3</button>
+					<button id="C4" name="selectedSeatsButton" type="button" class="cell">C4</button>
+					<div class="cellblank .btn-primary"></div>
+					<div class="cellblank"></div>
+					<div class="cellblank"></div>
+					<div class="cellblank"></div>
+					<div class="cellblank"></div>
+					<div class="cellblank"></div>
+					<div class="cellblank"></div>
+					<div class="cellblank"></div>
+					<div class="cellblank"></div>
+					<div class="cellblank"></div>
+					<div class="cellblank"></div>
+					<div class="cellblank"></div>
+					<div class="infocell" style="background-color: green;">Selected</div>
+				</div>
+				<div class="row">
+					<div class="cellblank"></div>
+					<button id="D0" name="selectedSeatsButton" type="button" class="cell">D0</button>
+					<button id="D1" name="selectedSeatsButton" type="button" class="cell">D1</button>
+					<button id="D2" name="selectedSeatsButton" type="button" class="cell">D2</button>
+					<button id="D3" name="selectedSeatsButton" type="button" class="cell">D3</button>
+					<button id="D4" name="selectedSeatsButton" type="button" class="cell">D4</button>
+					<div class="cellblank .btn-primary"></div>
+					<div class="cellblank"></div>
+					<div class="cellblank"></div>
+					<div class="cellblank"></div>
+					<div class="cellblank"></div>
+					<div class="cellblank"></div>
+					<div class="cellblank"></div>
+					<div class="cellblank"></div>
+					<div class="cellblank"></div>
+					<div class="cellblank"></div>
+					<div class="cellblank"></div>
+					<div class="cellblank"></div>
+					<div class="infocell" style="background-color: red;">Booked</div>
+				</div>
+				<div class="row">
+					<div class="cellblank"></div>
+					<button id="E0" name="selectedSeatsButton" type="button" value="4" class="cell">E0</button>
+					<button id="E1" name="selectedSeatsButton" type="button" value="5" class="cell">E1</button>
+					<button id="E2" name="selectedSeatsButton" type="button" class="cell">E2</button>
+					<button id="E3" name="selectedSeatsButton" type="button" class="cell">E3</button>
+					<button id="E4" name="selectedSeatsButton" type="button" class="cell">E4</button>
+				</div>
+
+				<div class="row">
+					<div class="cellblank"></div>
+					<div>Selected Movie :</div>
+					<div class="invisible" th:text="${bookingWebDto.movieSelect}"></div>
+					<div th:text="${movie.title}"></div>
+					<div class="cellblank"></div>
+				</div>
+				<div class="row">
+					<input type="submit" value="Submit" style='width: 100px; margin: 0 50%; position: relative; left: -50px;'>
+				</div>
+			</div>
+
+		</form>
+	</div>
+</body>
+<script type="text/javascript">
+    var strBookedSeats = $('#strCurrentBookedSeats').val();
+    console.log("strBookedSeats : "+strBookedSeats)
+    var arrBookedSeats  = strBookedSeats.split(',').map(Number);
+	$(document)
+			.ready(
+					function() {
+						var obj = $("button");
+						var arr = $.makeArray(obj);
+						$('button').each(function (index, value) { 
+							 var itemButton = $("button")[index];
+							 if(jQuery.inArray(index,arrBookedSeats) > -1){
+								  itemButton.style.setProperty("background-color", "red");
+								  itemButton.disabled="disabled";
+							 }
+						});
+						
+						$("button").click(function() {
+									var index = $("button").index(this);
+									var colorstr = $(this).css(	"background-color");
+									if ($(this).css('background-color') == 'rgb(128, 128, 128)') {
+											$(this).css("background-color",	"green");
+											$("#listDiv").append('<input type="hidden" name="selectedSeats" type="text" value="'+index+'">');
+									} else {
+												$(this).css("background-color",	"grey");
+											}
+									});
+					});
+</script>
+</html>

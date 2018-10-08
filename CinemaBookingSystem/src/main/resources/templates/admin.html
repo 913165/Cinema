@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+<script th:src="@{/js/ajax.js}"></script>
+<script th:src="@{/js/something.js}"></script>
+<link rel="stylesheet" th:href="@{/css/base.css}" />
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.10/css/jquery.dataTables.css" />
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.10/js/jquery.dataTables.js"></script>
+<style>
+.vertical-menu {
+	width: 200px;
+}
+
+.vertical-menu a {
+	background-color: #eee;
+	color: black;
+	display: block;
+	padding: 12px;
+	text-decoration: none;
+}
+
+.vertical-menu a:hover {
+	background-color: #ccc;
+}
+
+.vertical-menu a.active {
+	background-color: #4CAF50;
+	color: white;
+}
+</style>
+<script>
+	$(document).ready(function($) {
+		$("#edit-form").submit(function(event) {
+			event.preventDefault();
+			postEdit();
+		});
+	});
+	$(document).ready(function($) {
+		$("#delete-form").submit(function(event) {
+			event.preventDefault();
+			postDelete();
+		});
+	});
+</script>
+</head>
+<body>
+<div th:include="../common/header"></div>
+	<div class="container col-md-12" id="Movie">
+		<div class="row col-md-12">
+			<div class="panel-body col-md-12">
+				<div class="vertical-menu col-md-4">
+					<a href="#" class="active">Home</a> <a href="#">Link 1</a> <a href="#">Link 2</a> <a href="#">Link 3</a> <a
+						href="#">Link 4</a>
+				</div>
+				<div class="panel panel-default col-md-5" th:fragment="addMovie">
+					<div class="panel-heading">
+						<h3 class="panel-title">Add Movie Data</h3>
+					</div>
+					<form action="#" th:action="@{/admin/addMovie}" th:object="${movieModel}" method="post" class="form-horizontal"
+						id="addMovieForm">
+						<div class="form-group">
+							<label for="inputTitle" class="col-sm-2 control-label">Title</label>
+							<div class="col-sm-10">
+								<input type="text" class="form-control" id="title" placeholder="title" th:field="*{title}" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="inputDescription" class="col-sm-2 control-label">Description</label>
+							<div class="col-sm-10">
+								<input type="text" class="form-control" id="description" placeholder="description" th:field="*{description}" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="yearOfRelease" class="col-sm-2 control-label">Year</label>
+							<div class="col-sm-10">
+								<select id="yearOfRelease" name="yearOfRelease" class="form-control">
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="inputLanguage" class="col-sm-2 control-label">Select Language</label>
+							<div class="col-sm-10">
+								<select id="language" name="language" class="form-control">
+									<option value="english">English</option>
+									<option value="hindi">Hindi</option>
+									<option value="other">Other</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="enabled" class="col-sm-2 control-label">Enabled</label>
+							<div class="col-sm-10">
+								<select id="enabled" name="enabled" class="form-control">
+									<option value="true">Yes</option>
+									<option value="false">No</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-offset-2 col-sm-10">
+								<button type="submit" class="btn btn-default" id="btnAddUser">Add</button>
+							</div>
+						</div>
+					</form>
+
+				</div>
+				<div class="panel-body col-md-3">
+					<div class="panel panel-default" th:fragment="listUserData" id="listUserData">
+						<div class="panel-heading">
+							<h3 class="panel-title">List Movie Data</h3>
+						</div>
+						<div class="panel-body">
+							<div class="table-responsive">
+								<table id="movie-table" class="table table-striped">
+									<thead>
+										<tr>
+											<th>Id</th>
+											<th>Title</th>
+										</tr>
+									</thead>
+									<tbody id="table-body">
+										<tr th:each="movie : ${movieList}">
+											<td th:text="${movie.id}">Id</td>
+											<td th:text="${movie.title}">title</td>
+											<td><a data-toggle="modal" data-target="#umodal" th:onclick="'showEditModal(' + ${movie.id} + ')'">Edit</a>
+											</td>
+											<td><a data-toggle='modal' data-target='#dmodal' th:onclick="'showDeleteModal(' + ${movie.id} + ')'">Delete</a>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div th:id="umodal" class="modal fade" tabindex="-1" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title">Update</h4>
+				</div>
+				<div class="modal-body">
+					<form id="edit-form" role="form" th:method="post" th:action="@{/admin/update}" th:object="${movie}">
+						<input id="update-id" type="hidden" th:field="*{id}" th:value="${movie.id}" />
+						<fieldset class="form-group">
+							<label for="update-title">Title</label> <input th:field="*{title}" th:value="${movie.title}" class="form-control"
+								id="update-title" type="text" placeholder="title" />
+						</fieldset>
+						<div class="form-group">
+							<button class="btn btn-success" type="submit">Save</button>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+
+	<div th:id="dmodal" class="modal fade" tabindex="-1" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title">Are you sure you want to delete ?</h4>
+				</div>
+				<div class="modal-body">
+					<form id="delete-form" role="form" th:method="post" th:action="@{/admin/delete}" th:object="${movie}">
+						<input id="delete-id" type="hidden" th:field="*{id}" th:value="${movie.id}" />
+						<fieldset class="form-group">
+							<input th:field="*{title}" th:value="${movie.title}" class="form-control" id="delete-title" type="hidden"
+								placeholder="title" />
+						</fieldset>
+						<div class="form-group">
+							<button class="btn btn-danger" type="submit">Yes</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+						</div>
+					</form>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+	<script>
+		function openCity(evt, cityName) {
+			var i, tabcontent, tablinks;
+			tabcontent = document.getElementsByClassName("tabcontent");
+			for (i = 0; i < tabcontent.length; i++) {
+				tabcontent[i].style.display = "none";
+			}
+			tablinks = document.getElementsByClassName("tablinks");
+			for (i = 0; i < tablinks.length; i++) {
+				tablinks[i].className = tablinks[i].className.replace(
+						" active", "");
+			}
+			document.getElementById(cityName).style.display = "block";
+			evt.currentTarget.className += " active";
+			document.cookie = "cityName=" + cityName
+					+ "1; expires=Thu, 18 Dec 2090 12:00:00 UTC; path=/";
+		}
+
+		function getCookie(cname) {
+			var name = cname + "=";
+			var decodedCookie = decodeURIComponent(document.cookie);
+			var ca = decodedCookie.split(';');
+			for (var i = 0; i < ca.length; i++) {
+				var c = ca[i];
+				while (c.charAt(0) == ' ') {
+					c = c.substring(1);
+				}
+				if (c.indexOf(name) == 0) {
+					return c.substring(name.length, c.length);
+				}
+			}
+			return "";
+		}
+	</script>
+
+	<script type="text/javascript">
+		var start = new Date().getFullYear();
+		var end = 1900
+		var options = "";
+		for (var year = start; year >= end; year--) {
+			options += "<option>" + year + "</option>";
+		}
+		document.getElementById("yearOfRelease").innerHTML = options;
+	</script>
+</body>
+
+
+</html>

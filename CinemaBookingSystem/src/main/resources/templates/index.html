@@ -1,0 +1,111 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Welcome to Cinema Booking System</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" media="screen" />
+<style>
+.bld {
+	font-weight: bold;
+}
+
+body {
+	background-size: 700x200px;
+	background-repeat: no-repeat;
+}
+</style>
+</head>
+<body>
+	<div th:include="../common/header"></div>
+	<div class="container">
+		<div class="page-header">
+			<h1>Book a Movie Ticket</h1>
+		</div>
+		<p></p>
+		<div class="search">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-10 col-md-offset-1">
+						<div class="form-section">
+							<div class="row">
+								<form action="#" th:action="@{|/bookTicket|}" th:object="${bookingWebDto}" method="post">
+									<div class="col-md-10">
+										<div class="col-md-3">
+											<div class="form-group">
+												<select class="form-control" th:name="movieSelect" name="movieSelect" id="movie">
+													<option value="" class="bld">Select Movie</option>
+													<option th:each="movie : ${movies}" th:text="${movie.title}" th:value="${movie.id}"></option>
+												</select>
+											</div>
+										</div>
+										<div class="col-md-3">
+											<div class="form-group">
+												<select class="form-control" th:name="cinemaSelect" name="cinemaSelect" id="cinema">
+													<option value="">Select Cinema</option>
+													<option th:each="cin : ${cinemas}" th:text="${cin.cinemaName}" th:value="${cin.id}"></option>
+												</select>
+											</div>
+										</div>
+										<div class="col-md-3">
+											<div class="form-group">
+												<select class="form-control" th:name="dateSelect" name="dateSelect" id="dateSelect">
+													<option value="">Select Date</option>
+													<option th:text="${today}" th:value="1"></option>
+													<option th:text="${tomorrow}" th:value="2"></option>
+													<option th:text="${theDayAfterTomorrow}" th:value="3"></option>
+												</select>
+											</div>
+										</div>
+										<div class="col-md-3">
+											<div class="form-group">
+												<select class="form-control" th:name="timeSelect" name="timeSelect" id="timeSelect">
+													<option value="">Select Time</option>
+													<option th:text="${dateTimeDto.showTime1}" th:value="${dateTimeDto.showTime1}"></option>
+													<option th:text="${dateTimeDto.showTime2}" th:value="${dateTimeDto.showTime2}"></option>
+													<option th:text="${dateTimeDto.showTime3}" th:value="${dateTimeDto.showTime3}"></option>
+													<option th:text="${dateTimeDto.showTime4}" th:value="${dateTimeDto.showTime4}"></option>
+													<option th:text="${dateTimeDto.showTime5}" th:value="${dateTimeDto.showTime5}"></option>
+												</select>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<button type="submit" class="btn btn-default btn-primary">Book</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12">
+						<h2>Featured and Upcoming Movies</h2>
+					</div>
+					<div class="col-lg-3 col-md-4 col-sm-6">
+						<a href="images/soorma.jpg" class="thumbnail">
+							<p>Soorma</p> <img src="images/soorma.jpg" />
+						</a>
+					</div>
+					<div class="col-lg-3 col-md-4 col-sm-6">
+						<a href="images/sanju.jpg" class="thumbnail">
+							<p>Sanju</p> <img src="images/sanju.jpg" />
+						</a>
+					</div>
+					<div class="col-lg-3 col-md-4 col-sm-6">
+						<a href="images/uncledrew.jpg" class="thumbnail">
+							<p>Uncle Drew</p> <img src="images/uncledrew.jpg" />
+						</a>
+					</div>
+					<div class="col-lg-3 col-md-4 col-sm-6">
+						<a href="images/escape.jpg" class="thumbnail">
+							<p>Koala</p> <img src="images/escape.jpg" />
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Bootstrap 101 Template</title>
+<!-- Bootstrap -->
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<style type="text/css">
+body {
+	padding-top: 60px;
+	padding-bottom: 40px;
+}
+#navigation {
+  background-color: #203260;
+}
+#navigation .navbar {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background-color: #203260;
+}
+#navigation .navbar .navbar-nav > li > a {
+  color: #fff;
+  font-size: 20px;
+}
+#navigation .navbar .navbar-nav > .active > a,
+#navigation .navbar .navbar-nav > .active > a:focus,
+#navigation .navbar .navbar-nav > .active > a:hover {
+  background-color: #065690;
+}
+#navigation .navbar .navbar-nav.navbar-right > li > a > div {
+  display: inline-block;
+}
+@media (min-width: 768px) {
+  #navigation .navbar .navbar-nav > li > a {
+    line-height: 40px;
+  }
+  #navigation .navbar .navbar-nav.navbar-right > li > a {
+    font-size: 20px;
+    line-height: 25px;
+  }
+  #navigation .navbar .navbar-nav.navbar-right > li > a > div {
+    display: block;
+  }
+}
+</style>
+</head>
+<body>
+<div th:fragment="navbar">
+	<!-- Fixed navbar -->
+	<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+		<div class="container">
+			<div class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li class="active" style="height:40px;"><a href="/">Home</a></li>
+					<li><a href="#about">About</a></li>
+					<li><a href="#contact">Contact</a></li>
+				</ul>
+				<ul class="nav navbar-nav pull-right">
+					<li><a href="#">Login</a></li>
+					<li><a href="#">Register</a></li>
+					<li><a href="/admin">Admin</a></li>
+				</ul>
+		</div>
+		</div>
+	</div>
+</div>	
+</body>
+</html>
