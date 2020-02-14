@@ -1,0 +1,40 @@
+package com.mapping.model;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class MapRequest {
+	private String topElement;
+	private String subElement;
+	List<IdList> idList = new ArrayList<IdList>();
+
+	public String getTopElement() {
+		return topElement;
+	}
+
+	public void setTopElement(String topElement) {
+		this.topElement = topElement;
+	}
+
+	public String getSubElement() {
+		return subElement;
+	}
+
+	public void setSubElement(String subElement) {
+		this.subElement = subElement;
+	}
+
+	public List<IdList> getIdList() {
+		return idList;
+	}
+
+	public void setIdList(List<IdList> idList) {
+		this.idList = idList;
+	}
+
+	@Override
+	public String toString() {
+		return "MapRequest [topElement=" + topElement + ", subElement=" + subElement + ", idList=" + idList + "]";
+	}
+
+}
