@@ -1,40 +1,46 @@
 package com.mapping.model;
 
-import java.util.ArrayList;
-import java.util.List;
+public class IdList {
+	private String text;
+	private String asOfDate;
+	private String identType;
+	private String id;
 
-public class MapRequest {
-	private String topElement;
-	private String subElement;
-	List<IdList> idList = new ArrayList<IdList>();
-
-	public String getTopElement() {
-		return topElement;
+	public String getText() {
+		return text;
 	}
 
-	public void setTopElement(String topElement) {
-		this.topElement = topElement;
+	public void setText(String text) {
+		this.text = text;
 	}
 
-	public String getSubElement() {
-		return subElement;
+	public String getAsOfDate() {
+		return asOfDate;
 	}
 
-	public void setSubElement(String subElement) {
-		this.subElement = subElement;
+	public void setAsOfDate(String asOfDate) {
+		this.asOfDate = asOfDate;
 	}
 
-	public List<IdList> getIdList() {
-		return idList;
+	public String getIdentType() {
+		return identType;
 	}
 
-	public void setIdList(List<IdList> idList) {
-		this.idList = idList;
+	public void setIdentType(String identType) {
+		this.identType = identType;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	@Override
 	public String toString() {
-		return "MapRequest [topElement=" + topElement + ", subElement=" + subElement + ", idList=" + idList + "]";
+		return "IdList [text=" + text + ", asOfDate=" + asOfDate + ", identType=" + identType + ", id=" + id + "]";
 	}
 
 }
