@@ -1,46 +1,98 @@
-package com.mapping.model;
+package com.mapping.util;
 
-public class IdList {
-	private String text;
-	private String asOfDate;
-	private String identType;
-	private String id;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-	public String getText() {
-		return text;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
+import com.alibaba.fastjson.JSON;
+import com.google.gson.Gson;
+import com.mapping.model.IdList;
+import com.mapping.model.MapRequest;
+
+public class JSONRequestUtil {
+	public static String getTopElement(Map mp) {
+		Iterator it = mp.entrySet().iterator();
+		Map.Entry pair = (Map.Entry) it.next();
+		return (String) pair.getKey();
 	}
 
-	public void setText(String text) {
-		this.text = text;
+	public static List getAllElements(Map mp) {
+		Iterator it = mp.entrySet().iterator();
+		List<String> list = new ArrayList<String>();
+		while (it.hasNext()) {
+			Map.Entry pair = (Map.Entry) it.next();
+			list.add((String) pair.getKey());
+		}
+		return list;
 	}
 
-	public String getAsOfDate() {
-		return asOfDate;
-	}
+	@SuppressWarnings("unchecked")
+	public static void main(String[] args) {
+		JSONParser parser = new JSONParser();
+		try {
+			MapRequest mapRequest = new MapRequest();
+			Object obj = parser.parse(new FileReader("test.json"));
+			JSONObject jsonObject = (JSONObject) obj;
+			HashMap<String, Object> yourHashMap = new Gson().fromJson(jsonObject.toString(), HashMap.class);
+			// System.out.println(yourHashMap);
+			String topElement = getTopElement(yourHashMap);
+			System.out.println("topElement : " + topElement);
+			mapRequest.setTopElement(topElement);
+			// -------------------------------------
 
-	public void setAsOfDate(String asOfDate) {
-		this.asOfDate = asOfDate;
-	}
+			Map map = (Map) yourHashMap.get(getTopElement(yourHashMap));
+			map.remove("mdsAuthentication");
+			List<String> listOfRequest = getAllElements(map);
+			listOfRequest.remove("mdsAuthentication");
+			String subElementList = listOfRequest.get(0);
+			System.out.println("subElement : " + subElementList);
+			mapRequest.setSubElement(subElementList);
+			// System.out.println(map.get(listElement));
+			Map mapList = (Map) map.get(getTopElement(map));
+			String str = mapList.values().toArray()[0].toString();
+			str = str.replaceAll("=", ":");
+			str = (str.replaceAll(":\"?([^{|^]*?)\"?(?=[,|}|\\]])", ":\"$1\""));
+			str = str.replaceAll("\"?(\\w+)\"?(?=:)", "\"$1\"");
+			str = str.replaceAll("#|@", "");
+			// System.out.println("------------------------------------" + str);
+			System.out.println("--------------------------");
+			com.alibaba.fastjson.JSONArray jsonArray = JSON.parseArray(str);
+			// System.out.println(jsonArray);
+			for (int i = 0, size = jsonArray.size(); i < size; i++) {
+				IdList idList = new IdList();
+				com.alibaba.fastjson.JSONObject objectInArray = jsonArray.getJSONObject(i);
+				Set<String> strKeySet = objectInArray.keySet();
+				for (String strkey : strKeySet) {
+					if (strkey.equalsIgnoreCase("identifier")) {
+						JSONObject jsonObjectInner = (JSONObject) parser.parse(objectInArray.getString(strkey));
+						System.out.println("text : " + jsonObjectInner.get("text"));
+						idList.setText(jsonObjectInner.get("text").toString());
+					} else {
+						if (strkey.equalsIgnoreCase("id")) {
+							idList.setId(objectInArray.getString(strkey));
+						} else if (strkey.equalsIgnoreCase("asOdDate")) {
+							idList.setAsOfDate(objectInArray.getString(strkey));
+						} else if (strkey.equalsIgnoreCase("ident_type")) {
+							idList.setIdentType(objectInArray.getString(strkey));
+						}
+						System.out.println(strkey + ": " + objectInArray.getString(strkey));
+					}
+				}
+				mapRequest.getIdList().add(idList);
+				System.out.println("-----------------------");
+				// System.out.println(strKeySet);
+			}
+			System.out.println(mapRequest);
 
-	public String getIdentType() {
-		return identType;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
-
-	public void setIdentType(String identType) {
-		this.identType = identType;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	@Override
-	public String toString() {
-		return "IdList [text=" + text + ", asOfDate=" + asOfDate + ", identType=" + identType + ", id=" + id + "]";
-	}
-
 }
