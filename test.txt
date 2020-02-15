@@ -1,74 +1,143 @@
-// Java implementation of  Server side 
-// It contains two classes : Server and ClientHandler 
-// Save file as Server.java 
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Iterator;
+import java.util.Set;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
+/**
+ * @author Crunchify.com
+ *
+ */
 
-// Server class 
-public class Server {
+public class CrunchifyNIOServer {
 
-	public static void main(String[] args) {
-		// server is listening on port 5056
-		ServerSocket ss = null;
-		try {
-			ss = new ServerSocket(5056);
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-		// running infinite loop for getting
-		// client request
+	@SuppressWarnings("unused")
+	public static void main(String[] args) throws IOException {
+
+		// Selector: multiplexor of SelectableChannel objects
+		Selector selector = Selector.open(); // selector is open here
+
+		// ServerSocketChannel: selectable channel for stream-oriented listening sockets
+		ServerSocketChannel crunchifySocket = ServerSocketChannel.open();
+		InetSocketAddress crunchifyAddr = new InetSocketAddress("localhost", 1111);
+
+		// Binds the channel's socket to a local address and configures the socket to
+		// listen for connections
+		crunchifySocket.bind(crunchifyAddr);
+
+		// Adjusts this channel's blocking mode.
+		crunchifySocket.configureBlocking(false);
+
+		int ops = crunchifySocket.validOps();
+		SelectionKey selectKy = crunchifySocket.register(selector, ops, null);
+
+		// Infinite loop..
+		// Keep server running
 		while (true) {
-			Socket s = null;
-			try {
-				// socket object to receive incoming client requests
-				s = ss.accept();
-				System.out.println("A new client is connected : " + s);
-				// obtaining input and out streams
-				DataInputStream dis = new DataInputStream(s.getInputStream());
-				System.out.println(dis.readUTF());
-				DataOutputStream dos = new DataOutputStream(s.getOutputStream());
-				System.out.println("Assigning new thread for this client");
-				System.out.println(dis.readUTF());
-			} catch (Exception e) {
-				//e.printStackTrace();
+
+			// Selects a set of keys whose corresponding channels are ready for I/O
+			// operations
+			selector.select();
+
+			// token representing the registration of a SelectableChannel with a Selector
+			Set<SelectionKey> crunchifyKeys = selector.selectedKeys();
+			Iterator<SelectionKey> crunchifyIterator = crunchifyKeys.iterator();
+
+			while (crunchifyIterator.hasNext()) {
+				SelectionKey myKey = crunchifyIterator.next();
+
+				// Tests whether this key's channel is ready to accept a new socket connection
+				if (myKey.isAcceptable()) {
+					SocketChannel crunchifyClient = crunchifySocket.accept();
+					// Adjusts this channel's blocking mode to false
+					crunchifyClient.configureBlocking(false);
+					// Operation-set bit for read operations
+					crunchifyClient.register(selector, SelectionKey.OP_READ);
+					log("Connection Accepted: " + crunchifyClient.getLocalAddress() + "\n");
+					// Tests whether this key's channel is ready for reading
+				} else if (myKey.isReadable()) {
+					SocketChannel crunchifyClient = (SocketChannel) myKey.channel();
+					ByteBuffer crunchifyBuffer = ByteBuffer.allocate(256);
+					crunchifyClient.read(crunchifyBuffer);
+					String result = new String(crunchifyBuffer.array()).trim();
+					log("Message received: " + result);
+					SocketChannel client = (SocketChannel) myKey.channel();
+					/*
+					 * ByteBuffer bb1 = ByteBuffer.allocate(1000000);
+					 * 
+					 * String content = new String(Files.readAllBytes(Paths.get("superbowl.csv")));
+					 * String s = content; //byte[] array1 = new byte[bb1.limit()]; byte[] array1 =
+					 * s.getBytes(); bb1.put(array1); bb1.flip();
+					 * 
+					 */
+					ByteBuffer bb1 = ByteBuffer.allocate(10000);
+					String content = new String(Files.readAllBytes(Paths.get("superbowl.csv")));
+					String s = content;
+					byte[] array1 = new byte[bb1.limit()];
+					array1 = s.getBytes();
+					bb1.put(array1);
+					bb1.flip();
+					crunchifyClient.write(bb1);
+					crunchifyClient.close();
+					System.out.println("done");
+				}
+				crunchifyIterator.remove();
 			}
 		}
 	}
+
+	private static void log(String str) {
+		System.out.println(str);
+	}
 }
----------------------
-package com.mapping;
-// Java implementation for a client 
-// Save file as Client.java 
+-----------------------------------------
+package crunchify.com.tutorials;
 
-import java.io.*;
-import java.net.*;
-import java.util.Scanner;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.channels.SocketChannel;
+import java.util.ArrayList;
 
-// Client class 
-public class Client {
-	public static void main(String[] args) throws IOException {
-		try {
-			Scanner scn = new Scanner(System.in);
-			// getting localhost ip
-			InetAddress ip = InetAddress.getByName("localhost");
-			// establish the connection with server port 5056
-			Socket s = new Socket(ip, 5056);
-		// obtaining input and out streams
-			DataInputStream dis = new DataInputStream(s.getInputStream());
-			DataOutputStream dos = new DataOutputStream(s.getOutputStream());
-			// the following loop performs the exchange of
-			// information between client and client handler
-			String tosend = "{sample json}";
-			dos.writeUTF(tosend);
-			scn.close();
-			dis.close();
-			dos.close();
-			s.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+/**
+ * @author Crunchify.com
+ *
+ */
+
+public class CrunchifyNIOClient {
+
+	public static void main(String[] args) throws IOException, InterruptedException {
+
+		InetSocketAddress crunchifyAddr = new InetSocketAddress("localhost", 1111);
+		SocketChannel crunchifyClient = SocketChannel.open(crunchifyAddr);
+
+		log("Connecting to Server on port 1111...");
+
+		// create a ArrayList with companyName list
+		byte[] message = new String("testing").getBytes();
+		ByteBuffer buffer = ByteBuffer.wrap(message);
+		crunchifyClient.write(buffer);
+		log("sending: testing");
+		buffer.clear();
+		ByteBuffer bb = ByteBuffer.allocate(4096);
+		// read the msg sent by the client
+		crunchifyClient.read(bb);
+		 // display the message
+        bb.flip();
+        byte[] array = new byte[bb.limit()];
+        bb.get(array);
+        System.out.println(new String(array));
+		crunchifyClient.close();
+	}
+
+	private static void log(String str) {
+		System.out.println(str);
 	}
 }
