@@ -1,34 +1,74 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>socket.client</groupId>
-	<artifactId>SocketClient</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<dependencies>
-		<dependency>
-			<groupId>com.googlecode.json-simple</groupId>
-			<artifactId>json-simple</artifactId>
-			<version>1.1.1</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
-		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>2.8.5</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
-			<version>1.2.62</version>
-		</dependency>
+// Java implementation of  Server side 
+// It contains two classes : Server and ClientHandler 
+// Save file as Server.java 
 
-	</dependencies>
-	<properties>
-		<slf4jVersion>1.7.5</slf4jVersion>
-		<maven.compiler.target>1.8</maven.compiler.target>
-		<maven.compiler.source>1.8</maven.compiler.source>
-	</properties>
-</project>
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+// Server class 
+public class Server {
+
+	public static void main(String[] args) {
+		// server is listening on port 5056
+		ServerSocket ss = null;
+		try {
+			ss = new ServerSocket(5056);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		// running infinite loop for getting
+		// client request
+		while (true) {
+			Socket s = null;
+			try {
+				// socket object to receive incoming client requests
+				s = ss.accept();
+				System.out.println("A new client is connected : " + s);
+				// obtaining input and out streams
+				DataInputStream dis = new DataInputStream(s.getInputStream());
+				System.out.println(dis.readUTF());
+				DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+				System.out.println("Assigning new thread for this client");
+				System.out.println(dis.readUTF());
+			} catch (Exception e) {
+				//e.printStackTrace();
+			}
+		}
+	}
+}
+---------------------
+package com.mapping;
+// Java implementation for a client 
+// Save file as Client.java 
+
+import java.io.*;
+import java.net.*;
+import java.util.Scanner;
+
+// Client class 
+public class Client {
+	public static void main(String[] args) throws IOException {
+		try {
+			Scanner scn = new Scanner(System.in);
+			// getting localhost ip
+			InetAddress ip = InetAddress.getByName("localhost");
+			// establish the connection with server port 5056
+			Socket s = new Socket(ip, 5056);
+		// obtaining input and out streams
+			DataInputStream dis = new DataInputStream(s.getInputStream());
+			DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+			// the following loop performs the exchange of
+			// information between client and client handler
+			String tosend = "{sample json}";
+			dos.writeUTF(tosend);
+			scn.close();
+			dis.close();
+			dos.close();
+			s.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}
