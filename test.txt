@@ -1,4 +1,4 @@
-
+https://www.experts-exchange.com/questions/26069862/Java-Socket-client-hangs-blocks-when-reading-from-server.html
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
