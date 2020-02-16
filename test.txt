@@ -1,62 +1,73 @@
-import java.net.InetSocketAddress;
-import java.nio.*;
-import java.nio.channels.*;
-import java.nio.charset.*;
 
-public class JavaApplication12 {
-	public static void main(String[] args) throws Exception {
-		Charset charset = Charset.forName("ISO-8859-1");
-		ServerSocketChannel s = ServerSocketChannel.open();
-		s.configureBlocking(true);
-		s.socket().bind(new InetSocketAddress(1024));
-		SocketChannel client = null;
-		client = s.accept();
-        ByteBuffer reader = ByteBuffer.allocate(1);
-        reader.clear();
-        StringBuffer sb = new StringBuffer();
-        while (client.read(reader) > 0) {
-        	sb.append(new String(reader.array()));
-        	//System.out.println(new String(reader.array()));
-        	reader.clear();
-        }  
-        
-       // Thread.sleep(5000);
-        
-        System.out.println("final message : "+sb.toString());
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.lang.ClassNotFoundException;
+import java.net.ServerSocket;
+import java.net.Socket;
 
-	
-		client.close();
-		s.close();
+public class SocketServerExample {
+	private static ServerSocket server;
+	private static int port = 9876;
+
+	public static void main(String args[]) throws IOException, ClassNotFoundException {
+		server = new ServerSocket(port);
+		while (true) {
+			Socket socket = server.accept();
+			ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+			String message = (String) ois.readObject();
+			System.out.println(message);
+			ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+			oos.writeObject("Hello from server");
+			ois.close();
+			oos.close();
+			socket.close();
+			if (message.equalsIgnoreCase("exit"))
+				break;
+		}
+		server.close();
 	}
+
 }
--------------------
-import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.channels.SocketChannel;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+----------------------------------
 
-public class JavaApplication11 {
-	public static void main(String[] args) throws Exception {
-		String content = new String(Files.readAllBytes(Paths.get("test.csv")));
-		System.out.println(content);
-		Charset charset = Charset.forName("ISO-8859-1");
-		SocketChannel sc = SocketChannel.open(new InetSocketAddress("127.0.0.1", 1024));
-		sc.configureBlocking(true);
-		byte[] byteArr = content.getBytes();
-		ByteBuffer b = ByteBuffer.wrap(byteArr);
-		b.clear();
-		sc.write(b);
-		b.clear();
-		System.out.println("stage 1");
-		b.flip();
-		int a = sc.read(b);
-		sc.close();
-		b.flip();// sets the Position to 0 and limit to the number of bytes to be read.
-		CharBuffer c = charset.decode(b);
-		System.out.println("Got done ");
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
+/**
+ * This class implements java socket client
+ * 
+ * @author pankaj
+ *
+ */
+public class SocketClientExample {
+
+	public static void main(String[] args)
+			throws UnknownHostException, IOException, ClassNotFoundException, InterruptedException {
+		// get the localhost IP address, if server is running on some other IP, you need
+		// to use that
+		
+		String content ="Hello from client";
+		InetAddress host = InetAddress.getLocalHost();
+		Socket socket = null;
+		ObjectOutputStream oos = null;
+		ObjectInputStream ois = null;
+		// establish socket connection to server
+		socket = new Socket(host.getHostName(), 9876);
+		oos = new ObjectOutputStream(socket.getOutputStream());
+	    	oos.writeObject(content);
+		// read the server response message
+		ois = new ObjectInputStream(socket.getInputStream());
+		String message = (String) ois.readObject();
+		System.out.println( message);
+		// close resources
+		ois.close();
+		oos.close();
+		Thread.sleep(100);
+
 	}
-	
 }
